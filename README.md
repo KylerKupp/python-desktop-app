@@ -6,17 +6,17 @@ If any of the sections in this template grows to more than one screen, consider 
 
 Provide a README file with the following information:
 
-# Project Name
+# Python Desktop App
 
 ## Project summary
 
 ### One-sentence description of the project
 
-TODO: A 20-second elevator pitch of your project - its core idea summarized in one sentence.
+Add additional functionality and compatibility to platform for data acquisition, manipulation, and presentation.
 
 ### Additional information about the project
 
-TODO: Write a compelling/creative/informative project description / summary
+The current custom designed software is operational and collects data from our instrument every 2-3 seconds and then processes this information through calculations and manipulations in near real-time.  These experiments can run for 3-8 hours per day and generate a lot of data, some of which is not needed. Therefore, the data is continuously plotted in real-time, and the software allows us to extract key data points and calculated parameters at specific timepoints throughout the acquisition.  Previous students in this course developed a working Python platform that need that needs additional functions and to be able to access data from a new instrument.  The goal of this project is to enhance the function of the current Python system for additional functionality.
 
 ## Installation
 
