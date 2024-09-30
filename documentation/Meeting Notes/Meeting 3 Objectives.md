@@ -1,6 +1,8 @@
 Meeting 3 Objectives
 
 - Clarify the differences between modules 1, 2, and 3
+- Test Module 1
+- Demo Labview and Module 3
 
 Questions:
 
