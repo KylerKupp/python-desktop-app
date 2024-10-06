@@ -41,16 +41,12 @@ Please review the following code files, which were actively developed during thi
  
 ## Retrospective Summary
 Here's what went well:
-  * Item 1
-  * Item 2
-  * Item x
+  * General team communication
+  * Fair work distribution
+  * Consistent effort from all team members
  
 Here's what we'd like to improve:
-   * Item 1
-   * Item 2
-   * Item x
+   * Communication regarding deliverable version control
   
 Here are changes we plan to implement in the next sprint:
-   * Item 1
-   * Item 2
-   * Item x
+   * Always verify with team that we have the latest version before submitting
