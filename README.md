@@ -14,33 +14,26 @@ The current custom designed software is operational and collects data from our i
 
 ### Prerequisites
 
-TODO: List what a user needs to have installed before running the installation instructions below (e.g., git, which versions of Ruby/Rails)
+Python 3.1 or greater
 
-### Add-ons
-
-TODO: List which add-ons are included in the project, and the purpose each add-on serves in your app.
 
 ### Installation Steps
 
-TODO: Describe the installation process (making sure you mention `bundle install`).
-Instructions need to be such that a user can just copy/paste the commands to get things set up and running. 
+Download the executable file and double click it.
 
 
 ## Functionality
 
-TODO: Write usage instructions. Structuring it as a walkthrough can help structure this section,
-and showcase your features.
+Click import to select a file path for aquisition data. Press start to start plotting the data, or plot all to plot the data all at once. Press the mean bars button to bring up two verticle bars that can be used to select data segments. 
 
 
 ## Known Problems
 
-TODO: Describe any known issues, bugs, odd behaviors or code smells. 
-Provide steps to reproduce the problem and/or name a file or a function where the problem lives.
+Calculations in module 3 derivative graphs may be inaccurate
 
 
 ## Contributing
 
-TODO: Leave the steps below if you want others to contribute to your project.
 
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
@@ -50,11 +43,8 @@ TODO: Leave the steps below if you want others to contribute to your project.
 
 ## Additional Documentation
 
-TODO: Provide links to additional documentation that may exist in the repo, e.g.,
-  * Sprint reports
-  * User links
+
 
 ## License
 
-If you haven't already, add a file called `LICENSE.txt` with the text of the appropriate license.
-We recommend using the MIT license: <https://choosealicense.com/licenses/mit/>
+MIT License
