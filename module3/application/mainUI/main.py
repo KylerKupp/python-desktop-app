@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import QSizePolicy, QDialogButtonBox
 from PyQt5.QtWidgets import QSizePolicy
 from PyQt5.QtGui import QMovie
 
+import math
 import pyqtgraph as pg
 import sys, os, csv
 from worker import Worker
@@ -320,7 +321,7 @@ class LabView(QtWidgets.QMainWindow):
 
 
         ######################## {QFormLayout for uBar} AND {uBar Graph} now being used for atom49% #######################
-        self.uBarGraph = Graph(100,180)
+        self.uBarGraph = Graph(100,1)
         self.uBarGraph.setLabel(axis='left', text = 'atom49%')
         self.uBarGraph.setLabel(axis='bottom', text = 'Time (s)')
         self.uBarGraphVLayout = QtWidgets.QVBoxLayout()
@@ -333,7 +334,7 @@ class LabView(QtWidgets.QMainWindow):
         ################################################################################################
 
         ######################## {QFormLayout for DuBar} AND {DuBar Graph} #######################
-        self.DuBarGraph = Graph(100,180)
+        self.DuBarGraph = Graph(100,0.02)
         self.DuBarGraph.setLabel(axis='left', text = 'D[atom49%]')
         self.DuBarGraph.setLabel(axis='bottom', text = 'Time (s)')
         self.DuBarGraphVLayout = QtWidgets.QVBoxLayout()
@@ -893,7 +894,8 @@ class LabView(QtWidgets.QMainWindow):
 
         a49percent_y = [] #run y values through atom percent calculator, return transformed value to plot on atom49% graph
         da49percent_y = [] #calculate rate of change of a49percent and then plot
-        last_a49 = 0
+        last_ln_a49 = 0
+        last_x = 0
         # Getting the next data points from the list of all the points emitted by the worker thread.
         while len(dataPoints) != 0:
 
@@ -918,11 +920,16 @@ class LabView(QtWidgets.QMainWindow):
             
             #transform y value to atom49% y value
             current_a49 = Calculations.calculateAtom49(y)
-            a49percent_y.append(current_a49)
+            current_ln_a49 = math.log(current_a49) if current_a49 > 0 else float('-inf')  # Handle log(0) case
+            a49percent_y.append(current_ln_a49)
 
+        
 
-            da49percent_y.append(last_a49 - current_a49) #plot the change in a49percent
-            last_a49 = current_a49
+            da49percent_y.append((current_ln_a49 - last_ln_a49)/(x - last_x)) #plot the change in a49percent
+            last_ln_a49 = current_ln_a49
+            last_x = x
+
+            
             self.da49Data.dataPoints[x] = da49percent_y #store the found value along with its x coordinate.
             print("da49percent_y: ", da49percent_y)
             print("da49: ", self.da49Data.dataPoints)
