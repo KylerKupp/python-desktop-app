@@ -1,8 +1,5 @@
-serial
+pyserial
 pandas
-matplotlib.pyplot
-struct
+matplotlib
 numpy
-numpy.lib.function_base
 datetime
-os
