@@ -926,13 +926,13 @@ class LabView(QtWidgets.QMainWindow):
             a49percent_y.append(current_ln_a49)
 
         
-            last_a49s_queue.append(current_ln_a49)
+            last_a49s_queue.append(current_a49)
             last_xs_queue.append(x)
             while len(last_a49s_queue)> STENCIL_SIZE:
                 last_a49s_queue.pop(0)
             while len(last_xs_queue)> STENCIL_SIZE:
                 last_xs_queue.pop(0)
-            da49percent_y.append(np.gradient(np.array(last_a49s_queue),np.array(last_xs_queue),edge_order=2)[len(last_a49s_queue)-1]) #plot the change in a49percent
+            da49percent_y.append(math.log(np.gradient(np.array(last_a49s_queue),np.array(last_xs_queue),edge_order=2)[len(last_a49s_queue)-1])) #plot the change in a49percent
             
 
             
