@@ -925,7 +925,7 @@ class LabView(QtWidgets.QMainWindow):
 
         
 
-            da49percent_y.append((current_ln_a49 - last_ln_a49)/(x - last_x)) #plot the change in a49percent
+            da49percent_y.append(math.log((current_a49 - math.e**last_ln_a49)/(x - last_x))) #plot the change in a49percent
             last_ln_a49 = current_ln_a49
             last_x = x
 
