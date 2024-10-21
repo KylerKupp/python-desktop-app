@@ -894,8 +894,10 @@ class LabView(QtWidgets.QMainWindow):
 
         a49percent_y = [] #run y values through atom percent calculator, return transformed value to plot on atom49% graph
         da49percent_y = [] #calculate rate of change of a49percent and then plot
-        last_ln_a49 = 0
-        last_x = 0
+        last_a49s_queue = []
+        last_xs_queue = []
+        STENCIL_SIZE = 10 #this is how many points are used in the estimation of a point's derivative
+
         # Getting the next data points from the list of all the points emitted by the worker thread.
         while len(dataPoints) != 0:
 
@@ -924,10 +926,14 @@ class LabView(QtWidgets.QMainWindow):
             a49percent_y.append(current_ln_a49)
 
         
-
-            da49percent_y.append(math.log((current_a49 - math.e**last_ln_a49)/(x - last_x))) #plot the change in a49percent
-            last_ln_a49 = current_ln_a49
-            last_x = x
+            last_a49s_queue.append(current_ln_a49)
+            last_xs_queue.append(x)
+            while len(last_a49s_queue)> STENCIL_SIZE:
+                last_a49s_queue.pop(0)
+            while len(last_xs_queue)> STENCIL_SIZE:
+                last_xs_queue.pop(0)
+            da49percent_y.append(np.gradient(np.array(last_a49s_queue),np.array(last_xs_queue),edge_order=2)[len(last_a49s_queue)-1]) #plot the change in a49percent
+            
 
             
             self.da49Data.dataPoints[x] = da49percent_y #store the found value along with its x coordinate.
