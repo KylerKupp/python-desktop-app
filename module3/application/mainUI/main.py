@@ -930,7 +930,11 @@ class LabView(QtWidgets.QMainWindow):
                 last_a49s_queue.pop(0)
             while len(last_xs_queue)> STENCIL_SIZE:
                 last_xs_queue.pop(0)
-            da49percent_y.append(math.log(np.polyfit(last_xs_queue,last_a49s_queue,1)[0])) #plot the change in a49percent
+            polyfit = np.polyfit(last_xs_queue,last_a49s_queue,1)[0]
+            absolute_ln = math.log(abs(polyfit))
+            if (polyfit <= 0):
+                absolute_ln = -absolute_ln
+            da49percent_y.append(absolute_ln) #plot the change in a49percent
 
             
             self.da49Data.dataPoints[x] = da49percent_y #store the found value along with its x coordinate.
