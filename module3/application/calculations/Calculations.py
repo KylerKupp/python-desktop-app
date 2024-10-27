@@ -164,7 +164,7 @@ class Calculations:
             # 49  | 7
         
         #atom%49 = 49_mv / (45_mv + 47_mv + 49_mv)
-        atom49_percent = y[7] / (y[4] + y[6] + y[7])
+        atom49_percent = max(y[7],0) / (max(y[4],0) + max(y[6],0) + max(y[7],0))
         ## increase the value by a factor of 100
         atom49_percent = atom49_percent * 100
         return atom49_percent
