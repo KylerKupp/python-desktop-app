@@ -30,7 +30,7 @@ class Curve:
         self.y = y
         self.pen = pen
         self.points = SharedSingleton()
-        self.x = list(self.points.dataPoints.keys())
+        self.x = list(self.points.da49data.keys())
         self.graph = graph
         self.isChecked = False
         self.firstPoint = False
@@ -46,7 +46,7 @@ class Curve:
     def updateDataPoints(self, x, y):
 
         self.y += y
-        self.x = list(self.points.dataPoints.keys())
+        self.x = list(self.points.da49data.keys())
 
         if self.isChecked == True:
 

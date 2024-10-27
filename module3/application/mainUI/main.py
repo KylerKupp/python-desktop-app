@@ -85,11 +85,12 @@ class LabView(QtWidgets.QMainWindow):
         self.startBit = False
         self.setWindowTitle("LabView")
 
-        self.da49Data = SharedSingleton() #will store (x, da49percent_y) so getMean can retrieve points stored here.
-        self.da49Data.fileList = []
-        self.da49Data.dataPoints = {}
-        self.da49Data.folderAccessed = False
-        self.da49Data.xPoint = 0
+        self.sharedData = SharedSingleton() #will store (x, da49percent_y) so getMean can retrieve points stored here.
+        self.sharedData.fileList = []
+        self.sharedData.da49data = {}
+        self.sharedData.a49data = {}
+        self.sharedData.folderAccessed = False
+        self.sharedData.xPoint = 0
 
         self.delay = 200
         self.stopwatch = Stopwatch()
@@ -321,7 +322,7 @@ class LabView(QtWidgets.QMainWindow):
 
 
         ######################## {QFormLayout for uBar} AND {uBar Graph} now being used for atom49% #######################
-        self.uBarGraph = Graph(100,1)
+        self.uBarGraph = Graph(100,100)
         self.uBarGraph.setLabel(axis='left', text = 'atom49%')
         self.uBarGraph.setLabel(axis='bottom', text = 'Time (s)')
         self.uBarGraphVLayout = QtWidgets.QVBoxLayout()
@@ -334,7 +335,7 @@ class LabView(QtWidgets.QMainWindow):
         ################################################################################################
 
         ######################## {QFormLayout for DuBar} AND {DuBar Graph} #######################
-        self.DuBarGraph = Graph(100,0.02)
+        self.DuBarGraph = Graph(100,2)
         self.DuBarGraph.setLabel(axis='left', text = 'D[atom49%]')
         self.DuBarGraph.setLabel(axis='bottom', text = 'Time (s)')
         self.DuBarGraphVLayout = QtWidgets.QVBoxLayout()
@@ -725,13 +726,13 @@ class LabView(QtWidgets.QMainWindow):
         xleft, xright = self.meanBar.getRegion()
 
         # if no data exists, return undefined
-        if (not self.da49Data.dataPoints.keys()):
+        if (not self.sharedData.da49data.keys()):
             self.throwUndefined(lineEdit)
             return None
 
         # if one or both of the x values is not in the range of the dataset, return undefined
-        elif (xright < list(self.da49Data.dataPoints.keys())[0] or xleft > list(self.da49Data.dataPoints.keys())[-1] or
-                 xleft < list(self.da49Data.dataPoints.keys())[0] or xright > list(self.da49Data.dataPoints.keys())[-1]):
+        elif (xright < list(self.sharedData.da49data.keys())[0] or xleft > list(self.sharedData.da49data.keys())[-1] or
+                 xleft < list(self.sharedData.da49data.keys())[0] or xright > list(self.sharedData.da49data.keys())[-1]):
             
             self.throwUndefined(lineEdit)
             return None
@@ -740,11 +741,11 @@ class LabView(QtWidgets.QMainWindow):
             # get mean value between points
             
             # Find the closest x values in the data to the x values from the mean bars
-            xleft = min(self.da49Data.dataPoints.keys(), key=lambda x:abs(x-xleft))
-            xright = min(self.da49Data.dataPoints.keys(), key=lambda x:abs(x-xright))
+            xleft = min(self.sharedData.da49data.keys(), key=lambda x:abs(x-xleft))
+            xright = min(self.sharedData.da49data.keys(), key=lambda x:abs(x-xright))
 
             # Get mean from graph
-            mean_value = Calculations.getMean(self.da49Data.dataPoints, xleft, xright, curve)
+            mean_value = Calculations.getMean(self.sharedData.da49data, xleft, xright, curve)
         
             # Set line edit with mean value
             lineEdit.setText(str(mean_value))
@@ -894,9 +895,7 @@ class LabView(QtWidgets.QMainWindow):
 
         a49percent_y = [] #run y values through atom percent calculator, return transformed value to plot on atom49% graph
         da49percent_y = [] #calculate rate of change of a49percent and then plot
-        last_a49s_queue = []
-        last_xs_queue = []
-        STENCIL_SIZE = 10 #this is how many points are used in the estimation of a point's derivative
+        STENCIL_SIZE = 15 #this is how many points are used in the estimation of a point's derivative
         # Getting the next data points from the list of all the points emitted by the worker thread.
         while len(dataPoints) != 0:
 
@@ -922,24 +921,30 @@ class LabView(QtWidgets.QMainWindow):
             #transform y value to atom49% y value
             current_a49 = Calculations.calculateAtom49(y)
             current_ln_a49 = math.log(current_a49) if current_a49 > 0 else float('-inf')  # Handle log(0) case
-            a49percent_y.append(current_ln_a49)
+            a49percent_y.append(current_a49)
 
-            last_a49s_queue.append(current_a49)
-            last_xs_queue.append(x)
-            while len(last_a49s_queue)> STENCIL_SIZE:
-                last_a49s_queue.pop(0)
-            while len(last_xs_queue)> STENCIL_SIZE:
-                last_xs_queue.pop(0)
-            polyfit = np.polyfit(last_xs_queue,last_a49s_queue,1)[0]
-            absolute_ln = math.log(abs(polyfit))
-            if (polyfit <= 0):
-                absolute_ln = -absolute_ln
-            da49percent_y.append(absolute_ln) #plot the change in a49percent
+            self.sharedData.a49data[x] = current_a49
+            
 
             
-            self.da49Data.dataPoints[x] = da49percent_y #store the found value along with its x coordinate.
+            xs = []
+            ys = []
+            for pair in list(self.sharedData.a49data.items())[min(STENCIL_SIZE,len(self.sharedData.a49data.items()))*-1:]:
+                xs.append(pair[0])
+                ys.append(pair[1])
+            
+            if len(xs) > 0:
+                da49percent_y.append(np.polyfit(xs,ys,1)[0]) #plot the change in a49percent
+            else:
+                da49percent_y.append(0)
+
+            if da49percent_y[-1] > 0.3:
+                print("xs:", xs)
+                print("ys:", ys)
+            
+            self.sharedData.da49data[x] = da49percent_y #store the found value along with its x coordinate.
             print("da49percent_y: ", da49percent_y)
-            print("da49: ", self.da49Data.dataPoints)
+            #print("da49: ", self.da49Data.da49data)
         # mass| y-value
         # 32  | 0 
         # 34  | 1
@@ -1200,11 +1205,11 @@ class LabView(QtWidgets.QMainWindow):
         writer.writerow(['Count', 'Time', 'm32', 'm34', 'm36', 'm44', 'm45', 'm46', 'm47', 'm49'])
 
         # get list of time and voltage values from data
-        times = list(self.sharedData.dataPoints.keys())
-        voltages = list(self.sharedData.dataPoints.values())
+        times = list(self.sharedData.da49data.keys())
+        voltages = list(self.sharedData.da49data.values())
 
         # write lines of data to csv file
-        for i in range(len(self.sharedData.dataPoints)):
+        for i in range(len(self.sharedData.da49data)):
             row = [i, times[i]*1000, voltages[i][0], voltages[i][1], voltages[i][2], voltages[i][3],
                                voltages[i][4], voltages[i][5], voltages[i][6], voltages[i][7]]
 
