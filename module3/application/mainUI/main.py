@@ -322,7 +322,7 @@ class LabView(QtWidgets.QMainWindow):
 
 
         ######################## {QFormLayout for uBar} AND {uBar Graph} now being used for atom49% #######################
-        self.uBarGraph = Graph(100,100)
+        self.uBarGraph = Graph(100,1)
         self.uBarGraph.setLabel(axis='left', text = 'atom49%')
         self.uBarGraph.setLabel(axis='bottom', text = 'Time (s)')
         self.uBarGraphVLayout = QtWidgets.QVBoxLayout()
@@ -335,7 +335,7 @@ class LabView(QtWidgets.QMainWindow):
         ################################################################################################
 
         ######################## {QFormLayout for DuBar} AND {DuBar Graph} #######################
-        self.DuBarGraph = Graph(100,2)
+        self.DuBarGraph = Graph(100,0.02)
         self.DuBarGraph.setLabel(axis='left', text = 'D[atom49%]')
         self.DuBarGraph.setLabel(axis='bottom', text = 'Time (s)')
         self.DuBarGraphVLayout = QtWidgets.QVBoxLayout()
