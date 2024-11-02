@@ -921,9 +921,9 @@ class LabView(QtWidgets.QMainWindow):
             #transform y value to atom49% y value
             current_a49 = Calculations.calculateAtom49(y)
             current_ln_a49 = math.log(current_a49) if current_a49 > 0 else float('-inf')  # Handle log(0) case
-            a49percent_y.append(current_a49)
+            a49percent_y.append(current_ln_a49)
 
-            self.sharedData.a49data[x] = current_a49
+            self.sharedData.a49data[x] = current_ln_a49
             
 
             
