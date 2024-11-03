@@ -394,6 +394,9 @@ class LabView(QtWidgets.QMainWindow):
         self.meanLabel = QtWidgets.QLabel("Mean")
         
         self.meanLineEdit = LineEdit()
+
+        self.nameLineEdit = QtWidgets.QLineEdit()
+        self.nameLabel = QtWidgets.QLabel("Sample Name")
         
         #Get mean button
         self.getMeanButton = Button("Get Mean", 120, 26)
@@ -402,6 +405,8 @@ class LabView(QtWidgets.QMainWindow):
         self.lineEditList.extend([self.meanLineEdit])
 
         self.velocityConcentrationGridLayout = QtWidgets.QGridLayout()
+        self.velocityConcentrationGridLayout.addWidget(self.nameLabel, 1, 0, alignment=QtCore.Qt.AlignCenter)
+        self.velocityConcentrationGridLayout.addWidget(self.nameLineEdit, 2, 0, alignment=QtCore.Qt.AlignCenter)
         self.velocityConcentrationGridLayout.addWidget(self.meanLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
         self.velocityConcentrationGridLayout.addWidget(self.meanLineEdit, 2, 1, alignment=QtCore.Qt.AlignCenter)
         self.velocityConcentrationGridLayout.addWidget(self.getMeanButton, 2, 3, alignment=QtCore.Qt.AlignCenter)
@@ -427,9 +432,12 @@ class LabView(QtWidgets.QMainWindow):
         # Dummy row count
         #self.table.setRowCount(4)
         # set column count
-        self.table.setColumnCount(3)
+        self.table.setColumnCount(2)
         self.table.setMaximumWidth(330)
-        
+
+        # Set horizontal header to stretch columns to fill the table width
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
 
         self.tableVLayout = QtWidgets.QVBoxLayout()
         self.tableVLayout.addWidget(self.table)
@@ -785,9 +793,12 @@ class LabView(QtWidgets.QMainWindow):
         newRowPosition = self.table.rowCount()
         self.table.insertRow(newRowPosition)
 
+        # Insert the name from nameLineEdit in the first column
+        self.table.setItem(newRowPosition, 0, QtWidgets.QTableWidgetItem(self.nameLineEdit.text()))
+
         # set values in row (%CO2, uBar CO2) - old
         #new - set value in row to previously captured mean value
-        self.table.setItem(newRowPosition, 0, QtWidgets.QTableWidgetItem(str(round(float(self.meanLineEdit.text()), 4))))
+        self.table.setItem(newRowPosition, 1, QtWidgets.QTableWidgetItem(str(round(float(self.meanLineEdit.text()), 4))))
         #self.table.setItem(newRowPosition, 1, QtWidgets.QTableWidgetItem(str(round(self.uBarCO2, 4))))
             
 
