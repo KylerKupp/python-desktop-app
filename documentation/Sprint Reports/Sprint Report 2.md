@@ -1,6 +1,7 @@
 # Sprint 2 Report (10/5/2024 to 11/5/2024)
 
-## YouTube link of Sprint 2 Video: 
+## YouTube link of Sprint 2 Video
+https://drive.google.com/file/d/1Hp-j2QiedOf6pRsnDiS_SRmFkm8gLHIt/view?usp=sharing
 
 ## What's New (User Facing)
  * The Atom% graph now uses log to normalize the data.
@@ -19,6 +20,33 @@ Here are links to the issues that we completed in this sprint:
 
  * https://github.com/KylerKupp/python-desktop-app/issues/27
  * https://github.com/KylerKupp/python-desktop-app/issues/61
+ * https://github.com/KylerKupp/python-desktop-app/issues/62
+ * https://github.com/KylerKupp/python-desktop-app/issues/58
+ * https://github.com/KylerKupp/python-desktop-app/issues/57
+ * https://github.com/KylerKupp/python-desktop-app/issues/56
+ * https://github.com/KylerKupp/python-desktop-app/issues/55
+ * https://github.com/KylerKupp/python-desktop-app/issues/54
+ * https://github.com/KylerKupp/python-desktop-app/issues/53
+ * https://github.com/KylerKupp/python-desktop-app/issues/52
+ * https://github.com/KylerKupp/python-desktop-app/issues/51
+ * https://github.com/KylerKupp/python-desktop-app/issues/50
+ * https://github.com/KylerKupp/python-desktop-app/issues/49
+ * https://github.com/KylerKupp/python-desktop-app/issues/48
+ * https://github.com/KylerKupp/python-desktop-app/issues/47
+ * https://github.com/KylerKupp/python-desktop-app/issues/46
+ * https://github.com/KylerKupp/python-desktop-app/issues/45
+ * https://github.com/KylerKupp/python-desktop-app/issues/44
+ * https://github.com/KylerKupp/python-desktop-app/issues/43
+ * https://github.com/KylerKupp/python-desktop-app/issues/42
+ * https://github.com/KylerKupp/python-desktop-app/issues/41
+ * https://github.com/KylerKupp/python-desktop-app/issues/40
+ * https://github.com/KylerKupp/python-desktop-app/issues/39
+ * https://github.com/KylerKupp/python-desktop-app/issues/38
+ * https://github.com/KylerKupp/python-desktop-app/issues/37
+ * https://github.com/KylerKupp/python-desktop-app/issues/36
+ * https://github.com/KylerKupp/python-desktop-app/issues/35
+ * https://github.com/KylerKupp/python-desktop-app/issues/34
+ * https://github.com/KylerKupp/python-desktop-app/issues/33
 
  
  ## Incomplete Issues/User Stories
