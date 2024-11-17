@@ -590,7 +590,7 @@ class LabView(QtWidgets.QMainWindow):
         
     def barsButtonPressed(self):
 
-        xRange = self.realTimeGraph.getXAxisRange()
+        xRange = self.DuBarGraph.getXAxisRange()
         scale = xRange[1] - xRange[0]
         midPoint = (xRange[1] + xRange[0]) / 2
         scale = int(scale / 10)
