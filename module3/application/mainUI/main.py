@@ -564,6 +564,9 @@ class LabView(QtWidgets.QMainWindow):
         # Export Table connect method
         self.exportTableButton.clicked.connect(self.tableFileSave)
 
+        # Copy Table connect method
+        self.copyTableRowButton.clicked.connect(self.copyTableRowButtonPressed)
+
     def select_folder(self):
         # Open a file dialog to select a folder
         self.folder_path = QFileDialog.getExistingDirectory(self, 'Select a folder')
@@ -820,21 +823,24 @@ class LabView(QtWidgets.QMainWindow):
         :param {_ : }
         :return -> None
         """
-        rowIndex = self.table.currentRow()
 
-        # if a row is selected
-        if rowIndex != -1:
-            
-            row = ''
+        output = ''
+        selectedItems = self.table.selectionModel().selectedIndexes()
 
-            # create string with row values, separated by spaces
-            for i in range(4):
-                row += self.table.item(rowIndex, i).text() + ' '
+        indexMarker = 0
+        for row in range(self.table.rowCount()):
+            for col in range(self.table.columnCount()):
+                if selectedItems[indexMarker].row() == row and selectedItems[indexMarker].column() == col:
+                    output += str(selectedItems[indexMarker].data())
+                    indexMarker += 1
+                if col < self.table.columnCount()-1:
+                    output += '\t'
+            output += '\n'
 
-            # copy row string to clipboard
-            cb = QApplication.clipboard()
-            cb.clear(mode=cb.Clipboard)
-            cb.setText(row, mode=cb.Clipboard)
+        # copy row string to clipboard
+        cb = QApplication.clipboard()
+        cb.clear(mode=cb.Clipboard)
+        cb.setText(output, mode=cb.Clipboard)
 
 
 
@@ -917,8 +923,6 @@ class LabView(QtWidgets.QMainWindow):
             x, y = dataPoint
 
             # self.stopwatch.set_time(x)
-            print("x:", x)
-            #print("y: ", y)
 
             #x is time, y is list of mass values. need to have tuple (x time, da49percent_y value) 
             #for mean calculation ("curve/graph" index would be reffering to which y value to choose from.)
@@ -949,13 +953,8 @@ class LabView(QtWidgets.QMainWindow):
             else:
                 da49percent_y.append(0)
 
-            if da49percent_y[-1] > 0.3:
-                print("xs:", xs)
-                print("ys:", ys)
             
             self.sharedData.da49data[x] = da49percent_y #store the found value along with its x coordinate.
-            print("da49percent_y: ", da49percent_y)
-            #print("da49: ", self.da49Data.da49data)
         # mass| y-value
         # 32  | 0 
         # 34  | 1
