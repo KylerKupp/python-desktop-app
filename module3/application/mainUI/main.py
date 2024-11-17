@@ -181,7 +181,7 @@ class LabView(QtWidgets.QMainWindow):
         """
 
         ############################## Check Boxes Layout ##################################
-        # Initializing all the graphs
+        # Initializing all the graph's Checkboxes
         self.graph1CheckBox = QtWidgets.QCheckBox("Mass 45",self)
         self.graph1CheckBox.setStyleSheet("color: #800000")
         self.graph2CheckBox = QtWidgets.QCheckBox("Mass 47",self)
