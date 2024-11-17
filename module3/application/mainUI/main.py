@@ -1248,13 +1248,6 @@ class LabView(QtWidgets.QMainWindow):
     def stopDiaAccepted(self, obj):
         obj.close()
 
-        saveCalsDlg = Dialog(title="Save Calibrations?", buttonCount=3, message="Would you like to keep calibrations in the program?\n Press Save to export calibrations", parent=self)
-        saveCalsDlg.buttonBox.addButton("Save", QDialogButtonBox.HelpRole)
-        saveCalsDlg.buttonBox.helpRequested.connect(lambda: self.saveCals(saveCalsDlg))
-        saveCalsDlg.buttonBox.accepted.connect(lambda: self.keepCalsAccepted(saveCalsDlg))
-        saveCalsDlg.buttonBox.rejected.connect(lambda: self.keepCalsRejected(saveCalsDlg))
-        saveCalsDlg.exec()
-
         if self.application_state == "Out_Of_Data" or self.application_state == "Folder_Selected" or self.application_state == "Idle": 
             
             pass
