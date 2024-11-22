@@ -75,7 +75,11 @@ class Curve:
 
         self.y = []
         self.x = []
-        self.data_line.clear()
+        self.isChecked = False
+        self.firstPoint = False
+        if hasattr(self, 'data_line'):
+            self.data_line.clear()
+            self.data_line.setData(x=[], y=[])
         
 
 

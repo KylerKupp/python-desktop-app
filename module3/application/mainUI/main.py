@@ -573,7 +573,7 @@ class LabView(QtWidgets.QMainWindow):
         self.setWindowTitle(f"LabView {os.path.basename(self.folder_path)}")
         self.dataObj.setDirectory(self.folder_path)
         self.application_state = "Folder_Selected"
-        self.select_folder_action.setEnabled(False)
+        #self.select_folder_action.setEnabled(False)
 
 
 
@@ -1267,8 +1267,8 @@ class LabView(QtWidgets.QMainWindow):
                 print(exception)
 
         #export all raw data if there is data to load
-        if self.folder_path != '':
-            self.exportRawData()
+        #if self.folder_path != '':
+            #self.exportRawData()
 
         self.clearApplication(self.keepCals)
 
@@ -1390,6 +1390,10 @@ class LabView(QtWidgets.QMainWindow):
 
 
     def select_folder(self):
+        self.plot_active = False
+
+
+
         # Open a file dialog to select a folder
         self.folder_path = QFileDialog.getExistingDirectory(self, 'Select a folder')
         if self.folder_path != '':
@@ -1489,7 +1493,9 @@ class LabView(QtWidgets.QMainWindow):
         self.startBit = False
         self.delay = 200
         self.stopwatch = Stopwatch()
+        self.stopwatch.set_speed(self.speedSlider.value()/100)
         self.firstPoint = False
+        self.folder_path = ''
         
         self.yRealMax = None
         self.yRealMin = None
@@ -1502,13 +1508,25 @@ class LabView(QtWidgets.QMainWindow):
         self.yDubarMax = None
         self.yDubarMin = None
         self.isDubarYChanged = False
+
+        # Reset graph-related variables
+        self.yMinList = [None, None, None]
+        self.yMaxList = [None, None, None]
+        self.isYChanged = [False, False, False]
         
-        self.fileCheckThreadStarted = False
-        self.speedSlider.setSliderPosition(100)
-        self.speedSlider.setValue(100)
+        # Reset UI elements
         self.startButton.setEnabled(True)
         self.select_folder_action.setEnabled(True)
+        self.pauseResumeButton.setText("Pause")
+        self.plotAllButton.setEnabled(True)
 
+        # Reset shared data
+        self.sharedData = SharedSingleton()
+        self.sharedData.fileList = []
+        self.sharedData.da49data = {}
+        self.sharedData.a49data = {}
+        self.sharedData.folderAccessed = False
+        self.sharedData.xPoint = 0
 
         # Dictionaries to hold data for graphs
         if not keepCals:
@@ -1530,15 +1548,23 @@ class LabView(QtWidgets.QMainWindow):
 
         self.startButton.setEnabled(True)
 
-        self.curve1.clear()
-        self.curve2.clear()
-        self.curve3.clear()
-        self.curve5.clear()
+        # Clear graphs
+        for curve in [self.curve1, self.curve2, self.curve3, self.curve4, self.curve5]:
+            if curve is not None:
+                curve.clear()
 
         # Uncheck all the graph boxes.
-        self.graph1CheckBox.setChecked(False) 
-        self.graph2CheckBox.setChecked(False) 
-        self.graph3CheckBox.setChecked(False) 
+        self.graph1CheckBox.setChecked(True) 
+        self.graph2CheckBox.setChecked(True) 
+        self.graph3CheckBox.setChecked(True) 
+        self.graphCheckStateChanged(self.graph1CheckBox, self.curve1)
+        self.graphCheckStateChanged(self.graph2CheckBox, self.curve2)
+        self.graphCheckStateChanged(self.graph3CheckBox, self.curve5)
+
+        # Reset graph ranges
+        self.realTimeGraph.plotItem.getViewBox().autoRange()
+        self.uBarGraph.plotItem.getViewBox().autoRange()
+        self.DuBarGraph.plotItem.getViewBox().autoRange()
 
         
 # Main function
