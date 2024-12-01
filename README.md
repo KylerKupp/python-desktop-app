@@ -2,7 +2,7 @@
 
 ## Project summary
 
-Each module in this project is a Python program that aids in the use of Mass Spectrometers in the WSU Cousins Plant Biology Lab.
+Each module in this project is a Python program that aids in the use of Mass Spectrometers and other instruments used for analyzing plant respiration in the WSU Cousins Plant Biology Lab.
 
 ### Additional information about the project
 
