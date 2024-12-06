@@ -1,6 +1,7 @@
 # Sprint 3 Report (11/5/2024 to 12/5/2024)
 
-## YouTube link of Sprint 3 Video (Make this video unlisted)
+## YouTube link of Sprint 3 Video
+https://youtu.be/N24rFE9eLzA?si=3WC2lbnIPwIB1A8h
 
 ## What's New (User Facing)
  * Module 3's Mean Bars Rescale Button now rescales based on derivative graph instead of main graph.
