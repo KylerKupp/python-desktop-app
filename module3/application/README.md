@@ -17,13 +17,10 @@ Pandas: Used for data manipulation and analysis.
 NumPy: Used for high-level mathematical functions and handling large arrays and matrices.
 WatchDog: API to track the changes in the directory.
 
-###Installation Steps
-The user will be provided with a password protected installer. The user can install the application on the system using that installer.
-
-##Functionality
+## Functionality
 After successfully intalling the application, the user can run the application by double clicking the application executable. Once running, the application will show a window with a blank plot, a Start button, a Pause button, a speed slider, checkboxes, etc.
 
-Select the acquisition folder from the system. Clicking the Start button will begin a plot animation of 8 streams of Time vs. Voltage data. The data streams are all different colors. The user can select which plots (graphs 1 - 8) are visible with the checkboxes below. The speed of the graph can be manipulated with the speed slider below as well. Right clicking on the plot will display a menu of options including the option to change the scale of the axes.
+Select the acquisition folder from the system. Clicking the Start button will begin a plot animation of 3 streams of different isotopes over time. The data streams are all different colors. The user can select which plots (graphs 1 - 3) are visible with the checkboxes to the left. The speed of the graph can be manipulated with the speed slider below as well. Right clicking on the plot will display a menu of options including the option to change the scale of the axes.
 
 Clicking the Pause button will stop the plot animation where it is. Once the plot is paused, two vertical bars will appear on the plot, these are the Mean Bars, and they can be moved to any position on the plot. The Mean bars will highlight the range of the plot between them. You can move either bar or you can move the highlighted area all at once.
 
