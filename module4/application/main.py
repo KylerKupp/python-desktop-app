@@ -1,80 +1,93 @@
 import serial
+from serial.tools import list_ports
 import pandas as pd
 import matplotlib.pyplot as plt
 import struct
 import numpy as np
-from numpy.lib.function_base import blackman
+from numpy import blackman
 import datetime
 import os
 
-ComPort = 'COM8'
+ports = serial.tools.list_ports.comports()
+for port in ports:
+  print(f"Device: {port.device}, Description: {port.description}, HWID: {port.hwid}")
 
-def df_column_switch(df, column1, column2):
-    i = list(df.columns)
-    a, b = i.index(column1), i.index(column2)
-    i[b], i[a] = i[a], i[b]
-    df = df[i]
-    return df
+try:
 
-# Initialize dataframe
-df = pd.DataFrame({'time': [], 
-                        'channel1':    [],
-                        'channel2':    [],
-                        'channel3':    [],
-                        'channel4':    [],
-                        'channel5':    [],
-                        'channel6':    [],
-                        'channel7':    [],
-                        'channel8':    [],
-                        'channel9':    [],
-                        'channel10':   [],
-                        'channel11':   [],
-                        'channel12':   [],
-                        'gainSetting': []})
+    ComPort = "COM"+input("Enter the correct COM number: ")
 
-current = df.copy()
+    def df_column_switch(df, column1, column2):
+        i = list(df.columns)
+        a, b = i.index(column1), i.index(column2)
+        i[b], i[a] = i[a], i[b]
+        df = df[i]
+        return df
 
-ser = serial.Serial(ComPort, timeout=4)
-print("connected to: " + ser.name)
+    # Initialize dataframe
+    df = pd.DataFrame({'time': [], 
+                            'channel1':    [],
+                            'channel2':    [],
+                            'channel3':    [],
+                            'channel4':    [],
+                            'channel5':    [],
+                            'channel6':    [],
+                            'channel7':    [],
+                            'channel8':    [],
+                            'channel9':    [],
+                            'channel10':   [],
+                            'channel11':   [],
+                            'channel12':   [],
+                            'gainSetting': []})
 
-fileCount = 0 #counts amount of files created (for naming purposes)
-ffBuff = 0
-startTime = datetime.datetime.now()
-chunkBuffer = bytes(50)
+    current = df.copy()
 
-# make Acquisitions folder
-if not os.path.exists("Acquisitions"):
-    os.makedirs("Acquisitions")
+    ser = serial.Serial(ComPort, timeout=0.1)
+    print("connected to: " + ser.name)
 
-# declare new Acquisition folder name
-latest_file_index = len(os.listdir("Acquisitions"))
-directoryName = "Acquisition" + str(latest_file_index)
-if not os.path.exists("Acquisitions/" + directoryName):
-    os.makedirs("Acquisitions/" + directoryName)
+    fileCount = 0 #counts amount of files created (for naming purposes)
+    ffBuff = 0
+    startTime = datetime.datetime.now()
+    chunkBuffer = bytes(50)
+
+    # make Acquisitions folder
+    if not os.path.exists("Acquisitions"):
+        os.makedirs("Acquisitions")
+
+    # declare new Acquisition folder name
+    latest_file_index = len(os.listdir("Acquisitions"))
+    directoryName = "Acquisition" + str(latest_file_index)
+    if not os.path.exists("Acquisitions/" + directoryName):
+        os.makedirs("Acquisitions/" + directoryName)
+except Exception as e:
+    import traceback
+    print("An error occurred:")
+    traceback.print_exc()
+    input("Press Enter to exit...")
 
 try:
     #raise Exception()
     while True:
         # find "ff ff ff ff"
+        hexChunk = ''
         while True:
-            hexByte = ser.read(1).hex() 
-            #print(hexByte)
-            if hexByte == 'ff':
-                ffBuff += 1
-            else:
-                ffBuff = 0
+            hexChunk = ser.read(54).hex() 
+            print(hexChunk)
+            #if hexByte == 'ff':
+            #    ffBuff += 1
+            #else:
+            #    ffBuff = 0
 
-            if ffBuff >= 4:
+            if hexChunk[-4:] == b'\xff\xff\xff\xff':
                 #print("found fffffffff")
                 ffBuff = 0
                 break
 
         #read in a chunk (50) bytes (for compatibility with von's code)
-        chunkBuffer = ser.read(50)
+        #chunkBuffer = ser.read(50)
         #print("buff: ",chunkBuffer)
 
-        hexString = chunkBuffer.hex()
-        #print("hexString: ", hexString)
+        hexString = hexChunk[:-4]
+        print("hexString: ", hexString)
 
         time = datetime.datetime.now() - startTime
         time = round(time.total_seconds() * 1000, 0)
