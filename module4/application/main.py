@@ -1,5 +1,3 @@
-import serial
-from serial.tools import list_ports
 import pandas as pd
 import matplotlib.pyplot as plt
 import struct
@@ -7,90 +5,88 @@ import numpy as np
 from numpy import blackman
 import datetime
 import os
+import tkinter as tk
+from tkinter import filedialog
 
-ports = serial.tools.list_ports.comports()
-for port in ports:
-  print(f"Device: {port.device}, Description: {port.description}, HWID: {port.hwid}")
 
-try:
+def df_column_switch(df, column1, column2):
+    i = list(df.columns)
+    a, b = i.index(column1), i.index(column2)
+    i[b], i[a] = i[a], i[b]
+    df = df[i]
+    return df
 
-    ComPort = "COM"+input("Enter the correct COM number: ")
+root = tk.Tk()
+root.withdraw()  # Hide the main window
 
-    def df_column_switch(df, column1, column2):
-        i = list(df.columns)
-        a, b = i.index(column1), i.index(column2)
-        i[b], i[a] = i[a], i[b]
-        df = df[i]
-        return df
+spool_path = filedialog.askopenfilename(
+    initialdir="/", 
+    title="Select spooling file",
+    filetypes=(("text files", "*.txt"))
+)
 
-    # Initialize dataframe
-    df = pd.DataFrame({'time': [], 
-                            'channel1':    [],
-                            'channel2':    [],
-                            'channel3':    [],
-                            'channel4':    [],
-                            'channel5':    [],
-                            'channel6':    [],
-                            'channel7':    [],
-                            'channel8':    [],
-                            'channel9':    [],
-                            'channel10':   [],
-                            'channel11':   [],
-                            'channel12':   [],
-                            'gainSetting': []})
+if spool_path:
+    print("Selected file:", spool_path)
+else:
+    print("No file selected")
 
-    current = df.copy()
+spool_file = open(spool_path,"r")
 
-    ser = serial.Serial(ComPort, timeout=0.1)
-    print("connected to: " + ser.name)
+# Initialize dataframe
+df = pd.DataFrame({'time': [], 
+                        'channel1':    [],
+                        'channel2':    [],
+                        'channel3':    [],
+                        'channel4':    [],
+                        'channel5':    [],
+                        'channel6':    [],
+                        'channel7':    [],
+                        'channel8':    [],
+                        'channel9':    [],
+                        'channel10':   [],
+                        'channel11':   [],
+                        'channel12':   [],
+                        'gainSetting': []})
 
-    fileCount = 0 #counts amount of files created (for naming purposes)
-    ffBuff = 0
-    startTime = datetime.datetime.now()
-    chunkBuffer = bytes(50)
+current = df.copy()
 
-    # make Acquisitions folder
-    if not os.path.exists("Acquisitions"):
-        os.makedirs("Acquisitions")
+fileCount = 0 #counts amount of files created (for naming purposes)
+ffBuff = 0
+startTime = datetime.datetime.now()
+chunkBuffer = bytes(50)
 
-    # declare new Acquisition folder name
-    latest_file_index = len(os.listdir("Acquisitions"))
-    directoryName = "Acquisition" + str(latest_file_index)
-    if not os.path.exists("Acquisitions/" + directoryName):
-        os.makedirs("Acquisitions/" + directoryName)
-except Exception as e:
-    import traceback
-    print("An error occurred:")
-    traceback.print_exc()
-    input("Press Enter to exit...")
+# make Acquisitions folder
+if not os.path.exists("Acquisitions"):
+    os.makedirs("Acquisitions")
+
+# declare new Acquisition folder name
+latest_file_index = len(os.listdir("Acquisitions"))
+directoryName = "Acquisition" + str(latest_file_index)
+if not os.path.exists("Acquisitions/" + directoryName):
+    os.makedirs("Acquisitions/" + directoryName)
 
 try:
     #raise Exception()
     while True:
         # find "ff ff ff ff"
         hexChunk = ''
+        time = None
         while True:
-            hexChunk = ser.read(54).hex() 
+            current_line = spool_file.readline()
+            line_chunks = current_line.split('\t')
+            while current_line and hexChunk[-4:] != 'ffffffff':
+                if len(hexChunk) == 0:
+                    # Parse the first chunk of current line into a datetime object, ignoring the nanoseconds
+                    time = datetime.strptime(line_chunks[0], "%m/%d/%y %H:%M:%S.%f")
+                hexChunk += line_chunks[1].strip()
+
+                current_line = spool_file.readline()
+
             print(hexChunk)
-            #if hexByte == 'ff':
-            #    ffBuff += 1
-            #else:
-            #    ffBuff = 0
+            break
 
-            if hexChunk[-4:] == b'\xff\xff\xff\xff':
-                #print("found fffffffff")
-                ffBuff = 0
-                break
-
-        #read in a chunk (50) bytes (for compatibility with von's code)
-        #chunkBuffer = ser.read(50)
-        #print("buff: ",chunkBuffer)
-
-        hexString = hexChunk[:-4]
+        hexString = hexChunk[-54:-4]
         print("hexString: ", hexString)
-
-        time = datetime.datetime.now() - startTime
-        time = round(time.total_seconds() * 1000, 0)
        
         # Store data in Pandas dataframe
         newCurrent = pd.DataFrame({ 'time':        time, 
@@ -141,7 +137,5 @@ try:
             fileCount += 1
 
 except Exception as e:
-    print("closing port: " + ser.name)
     print(e)
-    ser.close()
 
