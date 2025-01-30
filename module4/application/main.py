@@ -7,6 +7,7 @@ import datetime
 import os
 import tkinter as tk
 from tkinter import filedialog
+from datetime import datetime
 
 
 def df_column_switch(df, column1, column2):
@@ -22,7 +23,7 @@ root.withdraw()  # Hide the main window
 spool_path = filedialog.askopenfilename(
     initialdir="/", 
     title="Select spooling file",
-    filetypes=(("text files", "*.txt"))
+    filetypes=[("text files", "*.txt")]
 )
 
 if spool_path:
@@ -51,9 +52,6 @@ df = pd.DataFrame({'time': [],
 current = df.copy()
 
 fileCount = 0 #counts amount of files created (for naming purposes)
-ffBuff = 0
-startTime = datetime.datetime.now()
-chunkBuffer = bytes(50)
 
 # make Acquisitions folder
 if not os.path.exists("Acquisitions"):
@@ -71,42 +69,41 @@ try:
         # find "ff ff ff ff"
         hexChunk = ''
         time = None
-        while True:
+        current_line = spool_file.readline()
+        while current_line and hexChunk[-8:] != 'ffffffff':
+            line_chunks = current_line.strip().split('\t')
+            if len(hexChunk) == 0:
+                # Parse the first chunk of current line into a datetime object, ignoring the nanoseconds
+                time = datetime.strptime(line_chunks[0][:-4], "%m/%d/%y %H:%M:%S.%f")
+            hexChunk += line_chunks[1].strip()
+
             current_line = spool_file.readline()
-            line_chunks = current_line.split('\t')
-            while current_line and hexChunk[-4:] != 'ffffffff':
-                if len(hexChunk) == 0:
-                    # Parse the first chunk of current line into a datetime object, ignoring the nanoseconds
-                    time = datetime.strptime(line_chunks[0], "%m/%d/%y %H:%M:%S.%f")
-                hexChunk += line_chunks[1].strip()
 
-                current_line = spool_file.readline()
+        print(hexChunk)
 
-            print(hexChunk)
-            break
-
-        hexString = hexChunk[-54:-4]
+        hexString = hexChunk[-108:-8]
         print("hexString: ", hexString)
-       
-        # Store data in Pandas dataframe
-        newCurrent = pd.DataFrame({ 'time':        time, 
-                                    'channel1':    struct.unpack('!i', bytes.fromhex('0'+hexString[1:8]))[0] / 234800968 * 0.2,
-                                    'channel2':    struct.unpack('!i', bytes.fromhex('0'+hexString[9:16]))[0] / 234800968 * 20.0,
-                                    'channel3':    struct.unpack('!i', bytes.fromhex('0'+hexString[17:24]))[0] / 234800968 * 20.0,
-                                    'channel4':    struct.unpack('!i', bytes.fromhex('0'+hexString[25:32]))[0] / 234800968 * 0.1,
-                                    'channel5':    struct.unpack('!i', bytes.fromhex('0'+hexString[33:40]))[0] / 234800968 * 1.0,
-                                    'channel6':    struct.unpack('!i', bytes.fromhex('0'+hexString[41:48]))[0] / 234800968 * 1.0,
-                                    'channel7':    struct.unpack('!i', bytes.fromhex('0'+hexString[49:56]))[0] / 234800968 * 1.0,
-                                    'channel8':    struct.unpack('!i', bytes.fromhex('0'+hexString[57:64]))[0] / 234800968 * 1.0,
-                                    'channel9':    np.nan,
-                                    'channel10':   np.nan,
-                                    'channel11':   struct.unpack('!i', bytes.fromhex('0'+hexString[81:88]))[0] / 234800968 * 1.0,
-                                    'channel12':   struct.unpack('!i', bytes.fromhex('0'+hexString[89:96]))[0] / 234800968 * 1.0,
-                                    'gainSetting': '0'+hexString[97:]}, index=[0])
+        
+        if len(hexString) == 100:
+            # Store data in Pandas dataframe
+            newCurrent = pd.DataFrame({ 'time':        time, 
+                                        'channel1':    struct.unpack('!i', bytes.fromhex('0'+hexString[1:8]))[0] / 234800968 * 0.2,
+                                        'channel2':    struct.unpack('!i', bytes.fromhex('0'+hexString[9:16]))[0] / 234800968 * 20.0,
+                                        'channel3':    struct.unpack('!i', bytes.fromhex('0'+hexString[17:24]))[0] / 234800968 * 20.0,
+                                        'channel4':    struct.unpack('!i', bytes.fromhex('0'+hexString[25:32]))[0] / 234800968 * 0.1,
+                                        'channel5':    struct.unpack('!i', bytes.fromhex('0'+hexString[33:40]))[0] / 234800968 * 1.0,
+                                        'channel6':    struct.unpack('!i', bytes.fromhex('0'+hexString[41:48]))[0] / 234800968 * 1.0,
+                                        'channel7':    struct.unpack('!i', bytes.fromhex('0'+hexString[49:56]))[0] / 234800968 * 1.0,
+                                        'channel8':    struct.unpack('!i', bytes.fromhex('0'+hexString[57:64]))[0] / 234800968 * 1.0,
+                                        'channel9':    np.nan,
+                                        'channel10':   np.nan,
+                                        'channel11':   struct.unpack('!i', bytes.fromhex('0'+hexString[81:88]))[0] / 234800968 * 1.0,
+                                        'channel12':   struct.unpack('!i', bytes.fromhex('0'+hexString[89:96]))[0] / 234800968 * 1.0,
+                                        'gainSetting': '0'+hexString[97:]}, index=[0])
 
 
-        newCurrent = newCurrent.round(3)
-        current = pd.concat([current, newCurrent])
+            newCurrent = newCurrent.round(3)
+            current = pd.concat([current, newCurrent])
         
         
 
