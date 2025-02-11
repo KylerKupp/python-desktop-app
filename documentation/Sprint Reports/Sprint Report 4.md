@@ -32,7 +32,7 @@ Here are links to the issues that we completed in this sprint:
  ## Incomplete Issues/User Stories
  Here are links to issues we worked on but did not complete in this sprint:
  
- * https://github.com/KylerKupp/python-desktop-app/issues/25 <<Prototype was created but has not been fully tested.>>
+ * https://github.com/KylerKupp/python-desktop-app/issues/25 <Prototype was created but has not been fully tested.>
 
 ## Code Files for Review
 Please review the following code files, which were actively developed during this sprint, for quality:
