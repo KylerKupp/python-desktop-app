@@ -78,6 +78,8 @@ try:
             hexChunk += line_chunks[1].strip()
 
             current_line = spool_file.readline()
+            if current_line == '':
+                time.sleep(0.5)
 
         print(hexChunk)
 
