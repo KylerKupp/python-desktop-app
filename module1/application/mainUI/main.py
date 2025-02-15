@@ -22,7 +22,7 @@ from worker import Worker
 from newFileNotifierThread import NewFileNotifierThread
 from PyQt5.QtCore import Qt, QObject, QThread, pyqtSignal, QSize
 import numpy as np
-from time import time
+import time
 from stopwatch import Stopwatch
 from datetime import datetime
 from math import floor
@@ -914,13 +914,15 @@ class LabView(QtWidgets.QMainWindow):
         if not os.path.exists("../Acquisitions/" + directoryName):
             os.makedirs("../Acquisitions/" + directoryName)
 
-        spool_path = QFileDialog.getExistingDirectory(self, 'Select Spooling File')
+        spool_path = os.path.abspath(QFileDialog.getOpenFileName(self, 'Select Spooling File',"","Text Files (*.txt);;All Files(*)")[0])
 
         
         folderPath = os.path.abspath("../Acquisitions/" + directoryName)
 
         thread = threading.Thread(target=read_from_ezview, daemon=True,args=(folderPath, spool_path))
-        thread.start
+        thread.start()
+        
+
 
         self.folder_path = folderPath
 
