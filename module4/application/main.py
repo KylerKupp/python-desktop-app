@@ -8,7 +8,7 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 from datetime import datetime
-
+import time
 
 def df_column_switch(df, column1, column2):
     i = list(df.columns)
@@ -68,13 +68,13 @@ try:
     while True:
         # find "ff ff ff ff"
         hexChunk = ''
-        time = None
+        current_time = None
         current_line = spool_file.readline()
         while current_line and hexChunk[-8:] != 'ffffffff':
             line_chunks = current_line.strip().split('\t')
             if len(hexChunk) == 0:
                 # Parse the first chunk of current line into a datetime object, ignoring the nanoseconds
-                time = datetime.strptime(line_chunks[0][:-4], "%m/%d/%y %H:%M:%S.%f")
+                current_time = datetime.strptime(line_chunks[0][:-4], "%m/%d/%y %H:%M:%S.%f")
             hexChunk += line_chunks[1].strip()
 
             current_line = spool_file.readline()
@@ -88,7 +88,7 @@ try:
         
         if len(hexString) == 100:
             # Store data in Pandas dataframe
-            newCurrent = pd.DataFrame({ 'time':        time, 
+            newCurrent = pd.DataFrame({ 'time':        current_time, 
                                         'channel1':    struct.unpack('!i', bytes.fromhex('0'+hexString[1:8]))[0] / 234800968 * 0.2,
                                         'channel2':    struct.unpack('!i', bytes.fromhex('0'+hexString[9:16]))[0] / 234800968 * 20.0,
                                         'channel3':    struct.unpack('!i', bytes.fromhex('0'+hexString[17:24]))[0] / 234800968 * 20.0,
