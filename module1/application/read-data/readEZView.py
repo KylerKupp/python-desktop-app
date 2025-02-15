@@ -5,27 +5,19 @@ import numpy as np
 from numpy import blackman
 import datetime
 import os
-import tkinter as tk
-from tkinter import filedialog
 from datetime import datetime
 import time
 
 
-def read_from_ezview(folderPath):
+def read_from_ezview(folderPath, spool_path):
     def df_column_switch(df, column1, column2):
         i = list(df.columns)
         a, b = i.index(column1), i.index(column2)
         i[b], i[a] = i[a], i[b]
         df = df[i]
         return df
-    root = tk.Tk()
-    root.withdraw()  # Hide the main window
 
-    spool_path = filedialog.askopenfilename(
-        initialdir="/", 
-        title="Select spooling file",
-        filetypes=[("text files", "*.txt")]
-    )
+
 
     if spool_path:
         print("Selected file:", spool_path)
@@ -53,16 +45,6 @@ def read_from_ezview(folderPath):
     current = df.copy()
 
     fileCount = 0 #counts amount of files created (for naming purposes)
-
-    # make Acquisitions folder
-    if not os.path.exists("Acquisitions"):
-        os.makedirs("Acquisitions")
-
-    # declare new Acquisition folder name
-    latest_file_index = len(os.listdir("Acquisitions"))
-    directoryName = "Acquisition" + str(latest_file_index)
-    if not os.path.exists("Acquisitions/" + directoryName):
-        os.makedirs("Acquisitions/" + directoryName)
 
     try:
         #raise Exception()
