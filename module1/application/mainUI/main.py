@@ -17,6 +17,7 @@ from PyQt5.QtGui import QMovie
 
 import pyqtgraph as pg
 import sys, os, csv
+import threading
 from worker import Worker
 from newFileNotifierThread import NewFileNotifierThread
 from PyQt5.QtCore import Qt, QObject, QThread, pyqtSignal, QSize
@@ -26,6 +27,7 @@ from stopwatch import Stopwatch
 from datetime import datetime
 from math import floor
 from plotAllThread import PlotAllThread
+
 
 
 #####################################################################
@@ -57,6 +59,7 @@ from button import Button
 from dialog import Dialog
 from LineEdit import LineEdit
 from dataUtility import DataUtility
+from readEZView import read_from_ezview
 
 
 class LabView(QtWidgets.QMainWindow):
@@ -899,7 +902,26 @@ class LabView(QtWidgets.QMainWindow):
 
     def select_folder(self):
         # Open a file dialog to select a folder
-        self.folder_path = QFileDialog.getExistingDirectory(self, 'Select a folder')
+        #self.folder_path = QFileDialog.getExistingDirectory(self, 'Select a folder')
+
+        # make Acquisitions folder
+        if not os.path.exists("../Acquisitions"):
+            os.makedirs("../Acquisitions")
+
+        # declare new Acquisition folder name
+        latest_file_index = len(os.listdir("../Acquisitions"))
+        directoryName = "Acquisition" + str(latest_file_index)
+        if not os.path.exists("../Acquisitions/" + directoryName):
+            os.makedirs("../Acquisitions/" + directoryName)
+
+        
+        folderPath = os.path.abspath("../Acquisitions/" + directoryName)
+
+        thread = threading.Thread(target=read_from_ezview, daemon=True,args=(folderPath))
+        thread.start
+
+        self.folder_path = folderPath
+
         self.setWindowTitle(f"LabView {os.path.basename(self.folder_path)}")
         self.dataObj.setDirectory(self.folder_path)
         self.application_state = "Folder_Selected"
