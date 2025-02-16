@@ -932,14 +932,15 @@ class LabView(QtWidgets.QMainWindow):
         self.setWindowTitle(f"LabView {os.path.basename(self.folder_path)}")
         self.dataObj.setDirectory(self.folder_path)
         self.application_state = "Folder_Selected"
-        self.select_folder_action.setEnabled(False)
+        self.select_ezview_action.setEnabled(False)
 
     def select_folder(self):
         # Open a file dialog to select a folder
         self.folder_path = QFileDialog.getExistingDirectory(self, 'Select a folder')
         self.setWindowTitle(f"LabView {os.path.basename(self.folder_path)}")
         self.dataObj.setDirectory(self.folder_path)
-        self.application_state = "Folder_Selected"        
+        self.application_state = "Folder_Selected"
+        self.select_folder_action.setEnabled(False)
 
 
 
@@ -2362,6 +2363,7 @@ class LabView(QtWidgets.QMainWindow):
         self.speedSlider.setValue(100)
         self.startButton.setEnabled(True)
         self.select_folder_action.setEnabled(True)
+        self.select_ezview_action.setEnabled(True)
 
 
         # Dictionaries to hold data for graphs

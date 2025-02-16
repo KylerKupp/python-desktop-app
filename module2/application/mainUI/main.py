@@ -17,6 +17,7 @@ from PyQt5.QtGui import QMovie
 
 import pyqtgraph as pg
 import sys, os, csv
+import threading
 from worker import Worker
 from newFileNotifierThread import NewFileNotifierThread
 from PyQt5.QtCore import Qt, QObject, QThread, pyqtSignal, QSize
@@ -57,6 +58,7 @@ from button import Button
 from dialog import Dialog
 from LineEdit import LineEdit
 from dataUtility import DataUtility
+from readEZView import read_from_ezview
 
 
 class LabView(QtWidgets.QMainWindow):
@@ -451,13 +453,16 @@ class LabView(QtWidgets.QMainWindow):
         # Create a 'File' menu
         self.file_menu = self.menu_bar.addMenu('File')
 
-        # Add an action to select a folder
+        # Add actions to select a file/folder
         self.select_folder_action = QAction('Select Acq Folder', self)
+        self.select_ezview_action = QAction('Select EZView Data File', self)
         self.select_file_action = QAction('Select Cal File', self)
-        self.select_folder_action.triggered.connect(self.select_folder)
+        self.select_folder_action.triggered.connect(self.select_ezview)
+        self.select_ezview_action.triggered.connect(self.select_ezview)
         self.select_file_action.triggered.connect(self.select_file)
         self.file_menu.addAction(self.select_folder_action)
         self.file_menu.addAction(self.select_file_action)
+        self.file_menu.addAction(self.select_ezview_action)
 
         ######################## O2 Zero and CO2 cal #############################
 
@@ -775,6 +780,37 @@ class LabView(QtWidgets.QMainWindow):
 
         # Export Table connect method
         self.exportTableButton.clicked.connect(self.tableFileSave)
+
+    def select_ezview(self):
+        # Open a file dialog to select a folder
+        #self.folder_path = QFileDialog.getExistingDirectory(self, 'Select a folder')
+
+        # make Acquisitions folder
+        if not os.path.exists("../Acquisitions"):
+            os.makedirs("../Acquisitions")
+
+        # declare new Acquisition folder name
+        latest_file_index = len(os.listdir("../Acquisitions"))
+        directoryName = "Acquisition" + str(latest_file_index)
+        if not os.path.exists("../Acquisitions/" + directoryName):
+            os.makedirs("../Acquisitions/" + directoryName)
+
+        spool_path = os.path.abspath(QFileDialog.getOpenFileName(self, 'Select Spooling File',"","Text Files (*.txt);;All Files(*)")[0])
+
+        
+        folderPath = os.path.abspath("../Acquisitions/" + directoryName)
+
+        thread = threading.Thread(target=read_from_ezview, daemon=True,args=(folderPath, spool_path))
+        thread.start()
+        
+
+
+        self.folder_path = folderPath
+
+        self.setWindowTitle(f"LabView {os.path.basename(self.folder_path)}")
+        self.dataObj.setDirectory(self.folder_path)
+        self.application_state = "Folder_Selected"
+        self.select_ezview_action.setEnabled(False)
 
     def select_folder(self):
         # Open a file dialog to select a folder
@@ -1861,15 +1897,6 @@ class LabView(QtWidgets.QMainWindow):
 
 
 
-    def select_folder(self):
-        # Open a file dialog to select a folder
-        self.folder_path = QFileDialog.getExistingDirectory(self, 'Select a folder')
-        if self.folder_path != '':
-            self.setWindowTitle(f"LabView {os.path.basename(self.folder_path)}")
-            self.dataObj.setDirectory(self.folder_path)
-            self.application_state = "Folder_Selected"
-            self.select_folder_action.setEnabled(False)
-
     def select_file(self):
         # Open a file dialog to select a file
         file_path = QFileDialog.getOpenFileName(self, 'Select a file', os.getcwd(), "CSV Files (*.csv)")
@@ -1980,6 +2007,7 @@ class LabView(QtWidgets.QMainWindow):
         self.speedSlider.setValue(100)
         self.startButton.setEnabled(True)
         self.select_folder_action.setEnabled(True)
+        self.select_ezview_action.setEnabled(True)
 
 
         # Dictionaries to hold data for graphs
