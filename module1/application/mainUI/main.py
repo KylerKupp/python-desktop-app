@@ -473,11 +473,14 @@ class LabView(QtWidgets.QMainWindow):
 
         # Add an action to select a folder
         self.select_folder_action = QAction('Select Acq Folder', self)
+        self.select_ezview_action = QAction('Select EZView Data File', self)
         self.select_file_action = QAction('Select Cal File', self)
-        self.select_folder_action.triggered.connect(self.select_folder)
+        self.select_folder_action.triggered.connect(self.select_ezview)
+        self.select_ezview_action.triggered.connect(self.select_ezview)
         self.select_file_action.triggered.connect(self.select_file)
         self.file_menu.addAction(self.select_folder_action)
         self.file_menu.addAction(self.select_file_action)
+        self.file_menu.addAction(self.select_ezview_action)
 
         ######################## O2 Zero and CO2 cal #############################
 
@@ -900,7 +903,7 @@ class LabView(QtWidgets.QMainWindow):
         # Export Table connect method
         self.exportTableButton.clicked.connect(self.tableFileSave)
 
-    def select_folder(self):
+    def select_ezview(self):
         # Open a file dialog to select a folder
         #self.folder_path = QFileDialog.getExistingDirectory(self, 'Select a folder')
 
@@ -930,6 +933,14 @@ class LabView(QtWidgets.QMainWindow):
         self.dataObj.setDirectory(self.folder_path)
         self.application_state = "Folder_Selected"
         self.select_folder_action.setEnabled(False)
+
+    def select_folder(self):
+        # Open a file dialog to select a folder
+        self.folder_path = QFileDialog.getExistingDirectory(self, 'Select a folder')
+        self.setWindowTitle(f"LabView {os.path.basename(self.folder_path)}")
+        self.dataObj.setDirectory(self.folder_path)
+        self.application_state = "Folder_Selected"        
+
 
 
 
