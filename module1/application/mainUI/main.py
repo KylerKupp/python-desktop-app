@@ -471,7 +471,7 @@ class LabView(QtWidgets.QMainWindow):
         # Create a 'File' menu
         self.file_menu = self.menu_bar.addMenu('File')
 
-        # Add an action to select a folder
+        # Add actions to select a file/folder
         self.select_folder_action = QAction('Select Acq Folder', self)
         self.select_ezview_action = QAction('Select EZView Data File', self)
         self.select_file_action = QAction('Select Cal File', self)
