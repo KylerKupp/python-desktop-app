@@ -2,11 +2,11 @@
 
 
 a = Analysis(
-    ['mainUI\\main.py'],
-    pathex=['read-data','uiElements','calculations'],
+    ['main.py'],
+    pathex=[],
     binaries=[],
-    datas=[('mainUI/spinner50px.gif','mainUI/spinner50px.gif'),('ui/biology-labview-ui.ui','ui/biology-labview-ui.ui'),('ui/biology-labview-ui2.ui','ui/biology-labview-ui2.ui')],
-    hiddenimports=['pandas','calculations.py','dataUtility.py','file.py','getData.py','sharedSingleton.py','button.py','curve.py','dialog.py','frame.py','graph.py','LineEdit.py', 'readEZView.py'],
+    datas=[],
+    hiddenimports=[],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -35,5 +35,4 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    onefile=True,
 )
