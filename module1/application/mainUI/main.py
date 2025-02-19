@@ -476,7 +476,7 @@ class LabView(QtWidgets.QMainWindow):
         self.select_ezview_action = QAction('Select EZView Data File', self)
         self.select_file_action = QAction('Select Cal File', self)
         self.select_folder_action.triggered.connect(self.select_ezview)
-        self.select_ezview_action.triggered.connect(self.select_ezview)
+        self.select_ezview_action.triggered.connect(self.select_folder)
         self.select_file_action.triggered.connect(self.select_file)
         self.file_menu.addAction(self.select_folder_action)
         self.file_menu.addAction(self.select_file_action)
