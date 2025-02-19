@@ -73,7 +73,7 @@ def read_from_ezview(folderPath, spool_path):
             
             if len(hexString) == 100:
                 # Store data in Pandas dataframe
-                newCurrent = pd.DataFrame({ 'time':        int((start_time - current_time).total_seconds()*1000), 
+                newCurrent = pd.DataFrame({ 'time':        int((current_time - start_time).total_seconds()*1000), 
                                             'channel1':    struct.unpack('!i', bytes.fromhex('0'+hexString[1:8]))[0] / 234800968 * 0.2,
                                             'channel2':    struct.unpack('!i', bytes.fromhex('0'+hexString[9:16]))[0] / 234800968 * 20.0,
                                             'channel3':    struct.unpack('!i', bytes.fromhex('0'+hexString[17:24]))[0] / 234800968 * 20.0,
