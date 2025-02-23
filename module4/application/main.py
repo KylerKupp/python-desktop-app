@@ -111,7 +111,7 @@ try:
         
         
 
-        if len(current.index) >= 8: # row count
+        if len(current.index) >= 1: # row count
             #write current to csv
             #directoryPath = r'C:/Users/brayden.groshong/Workspace/Acquisition/'
             filePath = "Acquisitions/" + directoryName + "/" + str(fileCount) + ".csv"
