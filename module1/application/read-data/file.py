@@ -31,9 +31,9 @@ class File:
     def __next__(self):
         
         x_len = len(list(self.data.iloc[:,0]))
-        x_first = list(self.data.iloc[:,0])[0]/1000
-        x_last = list(self.data.iloc[:,0])[x_len-1]/1000
-        x = self.sharedData.xPoint + (x_last - x_first)
+        if self.sharedData.initialX is None:
+            self.sharedData.initialX = list(self.data.iloc[:,0])[0]/1000
+        x = list(self.data.iloc[:,0])[x_len-1]/1000 - self.sharedData.initialX
         self.sharedData.xPoint = x
 
 
