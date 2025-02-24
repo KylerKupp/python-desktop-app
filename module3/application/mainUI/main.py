@@ -91,6 +91,7 @@ class LabView(QtWidgets.QMainWindow):
         self.sharedData.a49data = {}
         self.sharedData.folderAccessed = False
         self.sharedData.xPoint = 0
+        self.sharedData.initialX = None
 
         self.delay = 200
         self.stopwatch = Stopwatch()
@@ -1527,6 +1528,7 @@ class LabView(QtWidgets.QMainWindow):
         self.sharedData.a49data = {}
         self.sharedData.folderAccessed = False
         self.sharedData.xPoint = 0
+        self.sharedData.initialX = None
 
         # Dictionaries to hold data for graphs
         if not keepCals:

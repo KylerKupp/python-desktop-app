@@ -90,6 +90,7 @@ class LabView(QtWidgets.QMainWindow):
         self.sharedData.dataPoints = {}
         self.sharedData.folderAccessed = False
         self.sharedData.xPoint = 0
+        self.sharedData.initialX = None
         self.delay = 200
         self.stopwatch = Stopwatch()
         self.firstPoint = False
@@ -2049,6 +2050,7 @@ class LabView(QtWidgets.QMainWindow):
         self.sharedData.dataPoints = {}
         self.sharedData.folderAccessed = False
         self.sharedData.xPoint = 0
+        self.sharedData.initialX = None
 
         # Data Object for getting the points.
         self.dataObj = GetData()
