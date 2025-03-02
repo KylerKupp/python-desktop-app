@@ -98,7 +98,7 @@ def read_from_ezview(folderPath, spool_path):
                 #write current to csv
                 #directoryPath = r'C:/Users/brayden.groshong/Workspace/Acquisition/'
                 filePath = folderPath + "/" + str(fileCount) + ".csv"
-                print("writing csv: ", filePath)
+                #print("writing csv: ", filePath)
                 current = current.drop(current.columns[[9, 10, 13]], axis=1)  # df.columns is zero-based pd.Index
 
                 # must reorder some columns
