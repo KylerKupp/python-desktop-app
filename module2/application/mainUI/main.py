@@ -23,6 +23,7 @@ from newFileNotifierThread import NewFileNotifierThread
 from PyQt5.QtCore import Qt, QObject, QThread, pyqtSignal, QSize
 import numpy as np
 from time import time
+from time import sleep
 from stopwatch import Stopwatch
 from datetime import datetime
 from math import floor
@@ -69,6 +70,8 @@ class LabView(QtWidgets.QMainWindow):
         This is where we initialize values and call the methods that create the User Interface
         """
         super(LabView, self).__init__()
+
+        self.delayTimer = None
 
         self.app = app
         self.screen_width = width
@@ -1816,8 +1819,16 @@ class LabView(QtWidgets.QMainWindow):
 
 
     def throwOutOfDataException(self):
-        self.speedSlider.value = self.speedSlider.value * 0.95
-        self.startButtonPressed()
+        self.application_state = "Out_Of_Data"
+        self.speedSlider.setValue(floor(self.speedSlider.value() * 0.95))
+        def delayedRestart(self):
+            self.startButton.setEnabled(True)
+            self.startButtonPressed()
+        if self.delayTimer is None or not self.delayTimer.is_alive():
+            self.delayTimer = threading.Timer(0.5,delayedRestart,[self])
+            self.delayTimer.start()
+
+
         #self.application_state = "Out_Of_Data"
         #dataExceptionDlg = Dialog(title="EXCEPTION!!", buttonCount=1, message="Application is out of data. Wait for sometime and then press Start or check instrument\nPress Ok to close the message.", parent=self)
         #dataExceptionDlg.buttonBox.accepted.connect(lambda: self.dataButtonDialogAccepted(dataExceptionDlg))
