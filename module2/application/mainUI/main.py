@@ -23,7 +23,6 @@ from newFileNotifierThread import NewFileNotifierThread
 from PyQt5.QtCore import Qt, QObject, QThread, pyqtSignal, QSize
 import numpy as np
 from time import time
-from time import sleep
 from stopwatch import Stopwatch
 from datetime import datetime
 from math import floor
@@ -1827,12 +1826,6 @@ class LabView(QtWidgets.QMainWindow):
         if self.delayTimer is None or not self.delayTimer.is_alive():
             self.delayTimer = threading.Timer(0.5,delayedRestart,[self])
             self.delayTimer.start()
-
-
-        #self.application_state = "Out_Of_Data"
-        #dataExceptionDlg = Dialog(title="EXCEPTION!!", buttonCount=1, message="Application is out of data. Wait for sometime and then press Start or check instrument\nPress Ok to close the message.", parent=self)
-        #dataExceptionDlg.buttonBox.accepted.connect(lambda: self.dataButtonDialogAccepted(dataExceptionDlg))
-        #dataExceptionDlg.exec()
 
     def outOfDataCondition(self):
         self.throwOutOfDataException()
