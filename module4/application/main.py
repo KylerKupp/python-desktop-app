@@ -1,13 +1,14 @@
-import serial
 import pandas as pd
 import matplotlib.pyplot as plt
 import struct
 import numpy as np
-from numpy.lib.function_base import blackman
+from numpy import blackman
 import datetime
 import os
-
-ComPort = 'COM8'
+import tkinter as tk
+from tkinter import filedialog
+from datetime import datetime
+import time
 
 def df_column_switch(df, column1, column2):
     i = list(df.columns)
@@ -15,6 +16,22 @@ def df_column_switch(df, column1, column2):
     i[b], i[a] = i[a], i[b]
     df = df[i]
     return df
+
+root = tk.Tk()
+root.withdraw()  # Hide the main window
+
+spool_path = filedialog.askopenfilename(
+    initialdir="/", 
+    title="Select spooling file",
+    filetypes=[("text files", "*.txt")]
+)
+
+if spool_path:
+    print("Selected file:", spool_path)
+else:
+    print("No file selected")
+
+spool_file = open(spool_path,"r")
 
 # Initialize dataframe
 df = pd.DataFrame({'time': [], 
@@ -32,15 +49,11 @@ df = pd.DataFrame({'time': [],
                         'channel12':   [],
                         'gainSetting': []})
 
+start_time = datetime.now()
+
 current = df.copy()
 
-ser = serial.Serial(ComPort, timeout=4)
-print("connected to: " + ser.name)
-
 fileCount = 0 #counts amount of files created (for naming purposes)
-ffBuff = 0
-startTime = datetime.datetime.now()
-chunkBuffer = bytes(50)
 
 # make Acquisitions folder
 if not os.path.exists("Acquisitions"):
@@ -56,52 +69,49 @@ try:
     #raise Exception()
     while True:
         # find "ff ff ff ff"
-        while True:
-            hexByte = ser.read(1).hex() 
-            #print(hexByte)
-            if hexByte == 'ff':
-                ffBuff += 1
-            else:
-                ffBuff = 0
+        hexChunk = ''
+        current_time = None
+        current_line = spool_file.readline()
+        while current_line and hexChunk[-8:] != 'ffffffff':
+            line_chunks = current_line.strip().split('\t')
+            if len(hexChunk) == 0:
+                # Parse the first chunk of current line into a datetime object, ignoring the nanoseconds
+                current_time = datetime.strptime(line_chunks[0][:-4], "%m/%d/%y %H:%M:%S.%f")
+            hexChunk += line_chunks[1].strip()
 
-            if ffBuff >= 4:
-                #print("found fffffffff")
-                ffBuff = 0
-                break
+            current_line = spool_file.readline()
+            if current_line == '':
+                time.sleep(0.5)
 
-        #read in a chunk (50) bytes (for compatibility with von's code)
-        chunkBuffer = ser.read(50)
-        #print("buff: ",chunkBuffer)
+        #print(hexChunk)
 
-        hexString = chunkBuffer.hex()
+        hexString = hexChunk[-108:-8]
         #print("hexString: ", hexString)
-
-        time = datetime.datetime.now() - startTime
-        time = round(time.total_seconds() * 1000, 0)
-       
-        # Store data in Pandas dataframe
-        newCurrent = pd.DataFrame({ 'time':        time, 
-                                    'channel1':    struct.unpack('!i', bytes.fromhex('0'+hexString[1:8]))[0] / 234800968 * 0.2,
-                                    'channel2':    struct.unpack('!i', bytes.fromhex('0'+hexString[9:16]))[0] / 234800968 * 20.0,
-                                    'channel3':    struct.unpack('!i', bytes.fromhex('0'+hexString[17:24]))[0] / 234800968 * 20.0,
-                                    'channel4':    struct.unpack('!i', bytes.fromhex('0'+hexString[25:32]))[0] / 234800968 * 0.1,
-                                    'channel5':    struct.unpack('!i', bytes.fromhex('0'+hexString[33:40]))[0] / 234800968 * 1.0,
-                                    'channel6':    struct.unpack('!i', bytes.fromhex('0'+hexString[41:48]))[0] / 234800968 * 1.0,
-                                    'channel7':    struct.unpack('!i', bytes.fromhex('0'+hexString[49:56]))[0] / 234800968 * 1.0,
-                                    'channel8':    struct.unpack('!i', bytes.fromhex('0'+hexString[57:64]))[0] / 234800968 * 1.0,
-                                    'channel9':    np.nan,
-                                    'channel10':   np.nan,
-                                    'channel11':   struct.unpack('!i', bytes.fromhex('0'+hexString[81:88]))[0] / 234800968 * 1.0,
-                                    'channel12':   struct.unpack('!i', bytes.fromhex('0'+hexString[89:96]))[0] / 234800968 * 1.0,
-                                    'gainSetting': '0'+hexString[97:]}, index=[0])
+        
+        if len(hexString) == 100:
+            # Store data in Pandas dataframe
+            newCurrent = pd.DataFrame({ 'time':        int((current_time - start_time).total_seconds()*1000), 
+                                        'channel1':    struct.unpack('!i', bytes.fromhex('0'+hexString[1:8]))[0] / 234800968 * 0.2,
+                                        'channel2':    struct.unpack('!i', bytes.fromhex('0'+hexString[9:16]))[0] / 234800968 * 20.0,
+                                        'channel3':    struct.unpack('!i', bytes.fromhex('0'+hexString[17:24]))[0] / 234800968 * 20.0,
+                                        'channel4':    struct.unpack('!i', bytes.fromhex('0'+hexString[25:32]))[0] / 234800968 * 0.1,
+                                        'channel5':    struct.unpack('!i', bytes.fromhex('0'+hexString[33:40]))[0] / 234800968 * 1.0,
+                                        'channel6':    struct.unpack('!i', bytes.fromhex('0'+hexString[41:48]))[0] / 234800968 * 1.0,
+                                        'channel7':    struct.unpack('!i', bytes.fromhex('0'+hexString[49:56]))[0] / 234800968 * 1.0,
+                                        'channel8':    struct.unpack('!i', bytes.fromhex('0'+hexString[57:64]))[0] / 234800968 * 1.0,
+                                        'channel9':    np.nan,
+                                        'channel10':   np.nan,
+                                        'channel11':   struct.unpack('!i', bytes.fromhex('0'+hexString[81:88]))[0] / 234800968 * 1.0,
+                                        'channel12':   struct.unpack('!i', bytes.fromhex('0'+hexString[89:96]))[0] / 234800968 * 1.0,
+                                        'gainSetting': '0'+hexString[97:]}, index=[0])
 
 
-        newCurrent = newCurrent.round(3)
-        current = pd.concat([current, newCurrent])
+            newCurrent = newCurrent.round(3)
+            current = pd.concat([current, newCurrent])
         
         
 
-        if len(current.index) >= 8: # row count
+        if len(current.index) >= 1: # row count
             #write current to csv
             #directoryPath = r'C:/Users/brayden.groshong/Workspace/Acquisition/'
             filePath = "Acquisitions/" + directoryName + "/" + str(fileCount) + ".csv"
@@ -128,7 +138,5 @@ try:
             fileCount += 1
 
 except Exception as e:
-    print("closing port: " + ser.name)
     print(e)
-    ser.close()
 
