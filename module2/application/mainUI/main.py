@@ -1816,10 +1816,12 @@ class LabView(QtWidgets.QMainWindow):
 
 
     def throwOutOfDataException(self):
-        self.application_state = "Out_Of_Data"
-        dataExceptionDlg = Dialog(title="EXCEPTION!!", buttonCount=1, message="Application is out of data. Wait for sometime and then press Start or check instrument\nPress Ok to close the message.", parent=self)
-        dataExceptionDlg.buttonBox.accepted.connect(lambda: self.dataButtonDialogAccepted(dataExceptionDlg))
-        dataExceptionDlg.exec()
+        self.speedSlider.value = self.speedSlider.value * 0.95
+        self.startButtonPressed()
+        #self.application_state = "Out_Of_Data"
+        #dataExceptionDlg = Dialog(title="EXCEPTION!!", buttonCount=1, message="Application is out of data. Wait for sometime and then press Start or check instrument\nPress Ok to close the message.", parent=self)
+        #dataExceptionDlg.buttonBox.accepted.connect(lambda: self.dataButtonDialogAccepted(dataExceptionDlg))
+        #dataExceptionDlg.exec()
 
     def outOfDataCondition(self):
         self.throwOutOfDataException()
