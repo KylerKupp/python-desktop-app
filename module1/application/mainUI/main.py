@@ -71,6 +71,8 @@ class LabView(QtWidgets.QMainWindow):
         """
         super(LabView, self).__init__()
 
+        self.delayTimer = None
+
         self.app = app
         self.screen_width = width
         self.screen_height = height
@@ -1067,9 +1069,13 @@ class LabView(QtWidgets.QMainWindow):
 
     def throwOutOfDataException(self):
         self.application_state = "Out_Of_Data"
-        dataExceptionDlg = Dialog(title="EXCEPTION!!", buttonCount=1, message="Application is out of data. Wait for sometime and then press Start or check instrument\nPress Ok to close the message.", parent=self)
-        dataExceptionDlg.buttonBox.accepted.connect(lambda: self.dataButtonDialogAccepted(dataExceptionDlg))
-        dataExceptionDlg.exec()
+        self.speedSlider.setValue(floor(self.speedSlider.value() * 0.95))
+        def delayedRestart(self):
+            self.startButton.setEnabled(True)
+            self.startButtonPressed()
+        if self.delayTimer is None or not self.delayTimer.is_alive():
+            self.delayTimer = threading.Timer(0.5,delayedRestart,[self])
+            self.delayTimer.start()
 
     def outOfDataCondition(self):
         self.throwOutOfDataException()
