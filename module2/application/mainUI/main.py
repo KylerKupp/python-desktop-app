@@ -319,7 +319,7 @@ class LabView(QtWidgets.QMainWindow):
         # self.realTimeGraph.getViewBox().wheelEvent = self.on_wheel_event
         
         self.graphVLayout = QtWidgets.QVBoxLayout()
-        self.graphVLayout.setContentsMargins(0, 40, 0, 0)
+        self.graphVLayout.setContentsMargins(0, 5, 0, 0)
         self.graphVLayout.addWidget(self.realTimeGraph)
 
         # Layout for {Graph} AND {Start Pause/Resume Slider Layout}
@@ -344,7 +344,7 @@ class LabView(QtWidgets.QMainWindow):
 
         # Widgets to be added in the layout
         self.intercept1Label = QtWidgets.QLabel("Intercept")
-        self.co2VoltLabel = QtWidgets.QLabel("CO2/Voltage\n   (ml/mV)")
+        self.co2VoltLabel = QtWidgets.QLabel("CO2/Voltage (ml/mV)")
         self.assayBufferLabel = QtWidgets.QLabel("CO2 Calibrations")
         self.emptyLabel = QtWidgets.QLabel("")
 
@@ -354,7 +354,7 @@ class LabView(QtWidgets.QMainWindow):
         self.lineEditList.extend([self.intercept1LineEdit, self.co2VoltLineEdit])
 
         self.assayBufferBoxGridLayout = QtWidgets.QGridLayout()
-        self.assayBufferBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
+        #self.assayBufferBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
         self.assayBufferBoxGridLayout.addWidget(self.intercept1Label, 1, 2, alignment=QtCore.Qt.AlignCenter)
         self.assayBufferBoxGridLayout.addWidget(self.co2VoltLabel, 1, 3, alignment=QtCore.Qt.AlignCenter)
         self.assayBufferBoxGridLayout.addWidget(self.assayBufferLabel, 2, 1, alignment=QtCore.Qt.AlignCenter)
@@ -370,11 +370,11 @@ class LabView(QtWidgets.QMainWindow):
         self.DuBarGraphLabel = QtWidgets.QLabel("Pressure Derivative")
 
         self.uBarBoxGridLayout = QtWidgets.QGridLayout()
-        self.uBarBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
+        #self.uBarBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
         self.uBarBoxGridLayout.addWidget(self.uBarGraphLabel, 2, 1, alignment=QtCore.Qt.AlignCenter)
 
         self.DuBarBoxGridLayout = QtWidgets.QGridLayout()
-        self.DuBarBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
+        #self.DuBarBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
         self.DuBarBoxGridLayout.addWidget(self.DuBarGraphLabel, 2, 1, alignment=QtCore.Qt.AlignCenter)
 
         ###############################################################################################
@@ -388,7 +388,7 @@ class LabView(QtWidgets.QMainWindow):
         self.assayBufferGraph.setLabel(axis='bottom', text = 'Voltage (mV)')
         self.assayBufferGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.assayBufferGraphVLayout = QtWidgets.QVBoxLayout()
-        self.assayBufferGraphVLayout.setContentsMargins(0, 40, 0, 0)
+        self.assayBufferGraphVLayout.setContentsMargins(0, 10, 0, 0)
         self.assayBufferGraphVLayout.addWidget(self.assayBufferGraph)
 
         self.assayBufferGraphBoxGridVLayout = QtWidgets.QVBoxLayout()
@@ -404,7 +404,7 @@ class LabView(QtWidgets.QMainWindow):
         self.uBarGraph.setLabel(axis='bottom', text = 'Time (s)')
         #self.uBarGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.uBarGraphVLayout = QtWidgets.QVBoxLayout()
-        self.uBarGraphVLayout.setContentsMargins(0, 40, 0, 0)
+        self.uBarGraphVLayout.setContentsMargins(0, 10, 0, 0)
         self.uBarGraphVLayout.addWidget(self.uBarGraph)
 
         self.uBarGraphBoxGridVLayout = QtWidgets.QVBoxLayout()
@@ -418,7 +418,7 @@ class LabView(QtWidgets.QMainWindow):
         self.DuBarGraph.setLabel(axis='bottom', text = 'Time (s)')
         #self.DuBarGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.DuBarGraphVLayout = QtWidgets.QVBoxLayout()
-        self.DuBarGraphVLayout.setContentsMargins(0, 40, 0, 0)
+        self.DuBarGraphVLayout.setContentsMargins(0, 10, 0, 0)
         self.DuBarGraphVLayout.addWidget(self.DuBarGraph)
 
         self.DuBarGraphBoxGridVLayout = QtWidgets.QVBoxLayout()
@@ -675,9 +675,9 @@ class LabView(QtWidgets.QMainWindow):
     def initializeQFrames(self):
 
         # Creating a QFrame from User defined QFrame class.
-        self.calculatedPlotsFrame = Frame(self.scrollArea)
-        self.calculationButtonsFrame = Frame(self.scrollArea)
-        self.rawDataPlotFrame = Frame(self.scrollArea)
+        self.calculatedPlotsFrame = Frame(self.scrollArea, 0.8)
+        self.calculationButtonsFrame = Frame(self.scrollArea, 0.7)
+        self.rawDataPlotFrame = Frame(self.scrollArea, 0.9)
         
         # Adding QFrames to the scroll area widget layout.
         self.scrollAreaWidgetLayout.addWidget(self.calculatedPlotsFrame)
