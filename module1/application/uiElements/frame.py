@@ -15,12 +15,12 @@ from PyQt5.QtCore import *
 class Frame(QtWidgets.QFrame):
 
 
-    def __init__(self, scrollArea):
+    def __init__(self, scrollArea, heightFactor=0.7):
         super(Frame, self).__init__()
 
         self.scrollArea = scrollArea
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-        self.setMinimumHeight(int(0.9 * self.scrollArea.height()))
+        self.setMinimumHeight(int(heightFactor * self.scrollArea.height()))
         self.setMinimumWidth(self.scrollArea.width())
         self.setFrameStyle(QFrame.Box | QFrame.Plain)
 
