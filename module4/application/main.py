@@ -1,5 +1,4 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import struct
 import numpy as np
 from numpy import blackman
