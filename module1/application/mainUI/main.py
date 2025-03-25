@@ -1082,7 +1082,7 @@ class LabView(QtWidgets.QMainWindow):
         max_speed = 100/deltas[floor(len(deltas)/10)] # Divide minimum time delta by 1 for natural speed, then convert to speedSlider units by multiplying by 100. 
 
         self.speedSlider.setValue(floor(max_speed))
-        
+
         def delayedRestart(self):
             self.startButton.setEnabled(True)
             self.startButtonPressed()
@@ -2191,8 +2191,6 @@ class LabView(QtWidgets.QMainWindow):
     def buttonDialogAccepted(self, obj):
         obj.close()
 
-
-
     def throwFolderNotSelectedException(self):
         startButtonExceptionDlg = Dialog(title="EXCEPTION!!", buttonCount=1, message="Select the data folder before pressing start button.\nPress Ok to continue.", parent=self)
         startButtonExceptionDlg.buttonBox.accepted.connect(lambda: self.startButtonDialogAccepted(startButtonExceptionDlg))
@@ -2200,13 +2198,6 @@ class LabView(QtWidgets.QMainWindow):
 
     def startButtonDialogAccepted(self, dlg):
         dlg.close()
-
-
-    def throwOutOfDataException(self):
-        self.application_state = "Out_Of_Data"
-        dataExceptionDlg = Dialog(title="EXCEPTION!!", buttonCount=1, message="Application is out of data. Wait for sometime and then press Start or check instrument\nPress Ok to close the message.", parent=self)
-        dataExceptionDlg.buttonBox.accepted.connect(lambda: self.dataButtonDialogAccepted(dataExceptionDlg))
-        dataExceptionDlg.exec()
 
     def outOfDataCondition(self):
         self.throwOutOfDataException()
@@ -2220,12 +2211,9 @@ class LabView(QtWidgets.QMainWindow):
         floatWarningDlg = Dialog(title="WARNING!", buttonCount=1, message="The entered value is not a numerical value!", parent=self)
         floatWarningDlg.buttonBox.accepted.connect(lambda: self.floatWarningAccepted(floatWarningDlg))
         floatWarningDlg.exec()
-        
-
 
     def floatWarningAccepted(self, obj):
         obj.close()
-        
 
     def purgeTablepButtonWarning(self):
 
@@ -2263,8 +2251,6 @@ class LabView(QtWidgets.QMainWindow):
         #autoscale other graphs
         self.assayBufferGraph.plotItem.getViewBox().autoRange()
         self.hclGraph.plotItem.getViewBox().autoRange()
-        
-        
     
     def purgeDiaRejected(self, obj):
         """
@@ -2274,7 +2260,6 @@ class LabView(QtWidgets.QMainWindow):
         """
         obj.close()
         pass
-
 
     def throwUndefined(self, lineEdit):
         lineEdit.setText('undef')
