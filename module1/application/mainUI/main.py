@@ -1069,7 +1069,20 @@ class LabView(QtWidgets.QMainWindow):
 
     def throwOutOfDataException(self):
         self.application_state = "Out_Of_Data"
-        self.speedSlider.setValue(floor(self.speedSlider.value() * 0.95))
+        
+        # Find minimum time between points
+        times = list(self.sharedData.dataPoints.keys())
+        times.sort()
+        deltas = []
+        for i in range(len(times)-1):
+            if (times[i+1]-times[i]) > 0:
+                deltas.append((times[i+1]-times[i])) # Find the difference
+        deltas.sort()
+
+        max_speed = 100/deltas[floor(len(deltas)/10)] # Divide minimum time delta by 1 for natural speed, then convert to speedSlider units by multiplying by 100. 
+
+        self.speedSlider.setValue(floor(max_speed))
+        
         def delayedRestart(self):
             self.startButton.setEnabled(True)
             self.startButtonPressed()

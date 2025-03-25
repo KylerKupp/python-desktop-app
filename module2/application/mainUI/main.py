@@ -1825,15 +1825,14 @@ class LabView(QtWidgets.QMainWindow):
         times.sort()
         deltas = []
         for i in range(len(times)-1):
-            if (times[i+1]-times[i])/1000 > 0:
+            if (times[i+1]-times[i]) > 0:
                 deltas.append((times[i+1]-times[i])) # Find the difference
         deltas.sort()
 
         max_speed = 100/deltas[floor(len(deltas)/10)] # Divide minimum time delta by 1 for natural speed, then convert to speedSlider units by multiplying by 100. 
-	
-        print("MAX SPEED",max_speed)
-        print(deltas)
+
         self.speedSlider.setValue(floor(max_speed))
+        
         def delayedRestart(self):
             self.startButton.setEnabled(True)
             self.startButtonPressed()
