@@ -1,6 +1,6 @@
 # Sprint 5 Report (2/5/2025 - 3/17/2025)
 
-## YouTube link of Sprint * Video (Make this video unlisted)
+## YouTube link of Sprint 5 Video
 https://youtu.be/BnqIFWF74QE
 
 ## What's New (User Facing)
