@@ -329,7 +329,7 @@ class LabView(QtWidgets.QMainWindow):
         # self.realTimeGraph.getViewBox().wheelEvent = self.on_wheel_event
         
         self.graphVLayout = QtWidgets.QVBoxLayout()
-        self.graphVLayout.setContentsMargins(0, 40, 0, 0)
+        self.graphVLayout.setContentsMargins(0, 0, 0, 0)
         self.graphVLayout.addWidget(self.realTimeGraph)
 
         # Layout for {Graph} AND {Start Pause/Resume Slider Layout}
@@ -354,7 +354,7 @@ class LabView(QtWidgets.QMainWindow):
 
         # Widgets to be added in the layout
         self.intercept1Label = QtWidgets.QLabel("Intercept")
-        self.biCarbCalLabel = QtWidgets.QLabel("BiCarb cal\n(nmol/ml/mV)")
+        self.biCarbCalLabel = QtWidgets.QLabel("BiCarb cal (nmol/ml/mV)")
         self.assayBufferLabel = QtWidgets.QLabel("Assay Buffer")
         self.emptyLabel = QtWidgets.QLabel("")
 
@@ -377,7 +377,7 @@ class LabView(QtWidgets.QMainWindow):
 
         # Widgets to be added in the layout
         self.intercept2Label = QtWidgets.QLabel("Intercept 2")
-        self.nmolLabel = QtWidgets.QLabel("(nmol/ml/mV)\n")
+        self.nmolLabel = QtWidgets.QLabel("(nmol/ml/mV)")
         self.hclLabel = QtWidgets.QLabel("HCL")
 
         self.intercept2LineEdit = LineEdit()
@@ -403,7 +403,7 @@ class LabView(QtWidgets.QMainWindow):
         self.assayBufferGraph.setLabel(axis='bottom', text = 'Voltage (mV)')
         self.assayBufferGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.assayBufferGraphVLayout = QtWidgets.QVBoxLayout()
-        self.assayBufferGraphVLayout.setContentsMargins(0, 40, 0, 0)
+        self.assayBufferGraphVLayout.setContentsMargins(0, 10, 0, 0)
         self.assayBufferGraphVLayout.addWidget(self.assayBufferGraph)
 
         self.assayBufferGraphBoxGridVLayout = QtWidgets.QVBoxLayout()
@@ -418,7 +418,7 @@ class LabView(QtWidgets.QMainWindow):
         self.hclGraph.setLabel(axis='bottom', text = 'Voltage (mV)')
         self.hclGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.hclGraphVLayout = QtWidgets.QVBoxLayout()
-        self.hclGraphVLayout.setContentsMargins(0, 40, 0, 0)
+        self.hclGraphVLayout.setContentsMargins(0, 10, 0, 0)
         self.hclGraphVLayout.addWidget(self.hclGraph)
 
         self.hclGraphBoxGridVLayout = QtWidgets.QVBoxLayout()
@@ -435,7 +435,7 @@ class LabView(QtWidgets.QMainWindow):
         self.concentrationGraph.setLabel(axis='bottom', text = '[CO2] (nmol/ml/sec)')
         self.concentrationGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.concentrationGraphVLayout = QtWidgets.QVBoxLayout()
-        self.concentrationGraphVLayout.setContentsMargins(0, 78, 0, 0)
+        self.concentrationGraphVLayout.setContentsMargins(0, 10, 0, 0)
         self.concentrationGraphVLayout.addWidget(self.concentrationGraph)
 
         self.concentrationLabelGraphVLayout = QtWidgets.QVBoxLayout()
@@ -764,9 +764,9 @@ class LabView(QtWidgets.QMainWindow):
     def initializeQFrames(self):
 
         # Creating a QFrame from User defined QFrame class.
-        self.calculatedPlotsFrame = Frame(self.scrollArea)
-        self.calculationButtonsFrame = Frame(self.scrollArea)
-        self.rawDataPlotFrame = Frame(self.scrollArea)
+        self.calculatedPlotsFrame = Frame(self.scrollArea, 0.7)
+        self.calculationButtonsFrame = Frame(self.scrollArea, 0.7)
+        self.rawDataPlotFrame = Frame(self.scrollArea, 0.9)
         
         # Adding QFrames to the scroll area widget layout.
         self.scrollAreaWidgetLayout.addWidget(self.calculatedPlotsFrame)
